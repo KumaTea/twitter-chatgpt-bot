@@ -1,0 +1,6 @@
+torch
+openai
+pillow
+tweepy
+requests
+transformers

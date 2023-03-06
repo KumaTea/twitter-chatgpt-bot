@@ -1,0 +1,10 @@
+[openai]
+organization = aBcDeFgHiJkLmNoPqRsTuVwXyZ
+api_key = aBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZ
+model = gpt-3.5-turbo
+
+[twitter]
+api_key = aBcDeFgHiJkLmNoPqRsTuVwXyZ
+api_sec = aBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZ
+acc_tok = aBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZ
+acc_sec = aBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZ
