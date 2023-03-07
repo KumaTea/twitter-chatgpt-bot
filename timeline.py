@@ -3,9 +3,13 @@ import requests
 from info import *
 from twifunc import *
 from chatgpt import chat
-from caption import get_caption
-from permission import check_permission
+# from caption import get_caption
+from capcli import get_caption
 from session import twi_db, logger, twi_cli
+
+
+def check_permission(user_id):
+    return user_id in twi_db.auth_users
 
 
 def should_reply(tweet):
@@ -18,7 +22,6 @@ def should_reply(tweet):
 
     # if is new mention
     replied_to = get_tweet(tweet.in_reply_to_status_id)
-    twi_db.cached_tweets[replied_to.id] = replied_to
     if bot_username in [i['screen_name'] for i in replied_to.entities['user_mentions']]:
         return False
 
@@ -63,11 +66,14 @@ def process_mentions(tweet_id):
         )
     except Exception as e:
         logger.error(str(e))
-        return twi.update_status(
-            status=error_msg,
-            in_reply_to_status_id=tweet_id,
-            auto_populate_reply_metadata=True
-        )
+        try:
+            return twi.update_status(
+                status=error_msg,
+                in_reply_to_status_id=tweet_id,
+                auto_populate_reply_metadata=True
+            )
+        except Exception as f:
+            logger.error(str(f))
 
 
 def extract_text(tweet):

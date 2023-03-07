@@ -1,5 +1,5 @@
 from session import twi, twi_db, logger
-from info import last_mentioned_id
+from info import last_mentioned_id, max_thread_length
 
 
 def get_tweet_type(tweet):
@@ -16,11 +16,13 @@ def get_tweet_type(tweet):
 
 def get_tweet_media(tweet, media_type):
     if media_type == 'photo':
-        return [i['media_url_https'] for i in tweet.extended_entities['media']]
-    elif media_type == 'video' or media_type == 'gif':
-        return tweet.extended_entities['media'][0]['video_info']['variants'][0]['url']
+        return [i['media_url_https'] for i in tweet.extended_entities['media'] if i['type'] == 'photo']
+    elif media_type == 'video':
+        return [i['video_info']['variants'][0]['url'] for i in tweet.extended_entities['media'] if i['type'] == 'video']
+    elif media_type == 'gif':
+        return [i['video_info']['variants'][0]['url'] for i in tweet.extended_entities['media'] if i['type'] == 'animated_gif']
     else:
-        return None
+        return []
 
 
 def get_media_entities_url(tweet):
@@ -42,13 +44,19 @@ def get_urls_in_tweet(tweet):
 
 def get_thread_tweets(tweet_id):
     thread = []
-    while True:
+    while len(thread) < max_thread_length:
         tweet = get_tweet(tweet_id)
         thread.append(tweet)
         if tweet.in_reply_to_status_id is None:
-            break
-        logger.info(f'Found reply: {tweet.in_reply_to_status_id} -> {tweet.id}')
-        tweet_id = tweet.in_reply_to_status_id
+            # if quote
+            if tweet.is_quote_status:
+                logger.info(f'Found quote: {tweet.quoted_status_id} -> {tweet.id}')
+                tweet_id = tweet.quoted_status_id
+            else:
+                break
+        else:
+            logger.info(f'Found reply: {tweet.in_reply_to_status_id} -> {tweet.id}')
+            tweet_id = tweet.in_reply_to_status_id
 
     thread.sort(key=lambda x: x.id, reverse=False)  # sort by oldest first
     return thread

@@ -1,6 +1,10 @@
-torch
+# client
 openai
-pillow
 tweepy
 requests
+
+# caption server
+flask
+torch
+pillow
 transformers

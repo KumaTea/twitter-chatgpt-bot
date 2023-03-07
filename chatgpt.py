@@ -24,16 +24,17 @@ def gen_thread(dialogue: list):
 
 
 def process_reply(dialogue, message):
-    if not message.lower().startswith('ChatGPT: '.lower()):
-        raise Exception('Not a reply from ChatGPT')
+    # if not message.lower().startswith('ChatGPT: '.lower()):
+    #     raise Exception('Not a reply from ChatGPT')
 
-    reply = message[len('ChatGPT: '):]
-    reply = gpt_to_bot(reply)
+    if message.startswith('ChatGPT: '):
+        message = message[len('ChatGPT: '):]
+    reply = gpt_to_bot(message)
     users = [i.split(':')[0] for i in dialogue]
     for user in users:
         if user in reply and f'@{user}' not in reply:
             reply = reply.replace(user, f'@{user}')
-    return reply
+    return reply[:140]
 
 
 def chat(dialogue: list):

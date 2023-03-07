@@ -18,6 +18,6 @@ def startup():
     # self_friends = twi.get_friend_ids(user_id=twi._me.id)
     kuma_friends = twi.get_friend_ids(screen_name=kuma)
 
-    twi_db.auth_users = list(set(self_followers) | set(kuma_friends))
+    twi_db.auth_users = list(set(self_followers) | (set(kuma_friends) - {twi._me.id}))
 
     return logger.info('Startup complete.')
