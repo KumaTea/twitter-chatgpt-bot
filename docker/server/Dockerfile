@@ -9,6 +9,11 @@ RUN set -ex && \
     rm -rf /tmp/docker && \
     rm /tmp/kuma-docker.tar.gz
 
+# Download model
+COPY dl.py /tmp/
+RUN /opt/conda/bin/python3 /tmp/dl.py
+
+
 # Set entrypoint
 ENTRYPOINT ["/bin/bash", "/home/kuma/bots/KumaGPT/docker/server/run-docker.sh"]
 
