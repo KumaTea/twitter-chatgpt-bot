@@ -7,4 +7,5 @@ requests
 flask
 torch
 pillow
+accelerate
 transformers

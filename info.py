@@ -1,4 +1,4 @@
-version = '1.1.0.0' + 'a'
+version = '1.2.0.0' + 'b'
 bot_username = 'KumaTeaBot'
 last_id_file = 'last_id.txt'
 last_mentioned_id = 1632059704548687872  # bootstrap
@@ -6,10 +6,10 @@ max_thread_length = 10
 
 kuma = 'KumaTea0'
 
-instruction = "You're Twitter user ChatGPT. " \
-              'Here is thread in format "Name: Text [Photo]". ' \
-              '[Photo] will gone if none. ' \
-              'Reply as their intimate in their language, concisely friendly & casual. '
+instruction = "You're Twitter user ChatGPT. Here's " \
+              'a thread in format "Name: Tweet". ' \
+              'Reply as their friend in their language, ' \
+              'be concise kind & relaxed. '
 chatgpt_name = 'ChatGPT'
 
 not_auth = '对不起，bot 内测调试中，暂不对外开放！'

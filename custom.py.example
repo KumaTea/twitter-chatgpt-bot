@@ -1,0 +1,19 @@
+def bi_xiao(name_list):
+    name_list = [name_list] if isinstance(name_list, str) else name_list
+    bi = '{}比'
+    xiao = '小{}'
+    return [bi.format(name) for name in name_list] + [xiao.format(name) for name in name_list]
+
+
+aliases = {
+    # username: [aliases]
+    'KumaTea0': ['KumaTea', 'Kuma'],
+    'realKumaTea': ['KumaTea', 'Kuma'],
+}
+
+
+hei_hua = {
+    # 黑话
+    'wlbl': '网络暴力',
+    'xm': '羡慕',
+}

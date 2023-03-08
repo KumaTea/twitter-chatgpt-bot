@@ -88,3 +88,31 @@ def get_tweet(tweet_id):
         setattr(tweet, 'text', tweet.full_text)
         twi_db.cached_tweets[tweet_id] = tweet
         return tweet
+
+
+def tweet_cut(text):
+    """
+    Twitter only allows 280 characters in a tweet.
+    However Chinese and Japanese characters are counted as 2 characters.
+    """
+    max_tweet_length = 280
+    ascii_range = range(0, 127)
+
+    if len(text) <= max_tweet_length/2:
+        return text
+
+    index = 0
+    count = 0
+    for i in text:
+        index += 1
+        if ord(i) in ascii_range:
+            count += 1
+        else:
+            count += 2
+
+        if count == max_tweet_length:  # 280
+            return text[:index-2] + '…'
+        elif count > max_tweet_length:  # 281
+            return text[:index-3] + '…'
+
+    return text
