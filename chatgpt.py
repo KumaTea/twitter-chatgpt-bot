@@ -42,7 +42,7 @@ def bot_to_gpt(message):
         for nickname in aliases[user]:
             if nickname in msg:
                 # msg = msg.replace(alias, f' @{user} ')
-                msg = re.sub(rf'([^@])({nickname})', rf'\1 @{user} ', f' {msg}', flags=re.IGNORECASE)
+                msg = re.sub(rf'([^@])({nickname})', rf'\1 @{user} ', msg, flags=re.IGNORECASE)
                 # replace once is enough
                 break
 
@@ -78,5 +78,10 @@ def gpt_to_bot(dialogue, message):
             reply = reply.replace(f'@{user}', nickname)
             # strip spaces
             reply = re.sub(rf'\s?{nickname}\s?', nickname, reply)
+
+    # remove unnecessary mention to target user
+    target_username = users[-1]
+    if reply.startswith(f'@{target_username}'):
+        reply = reply[len(f'@{target_username}'):]
 
     return reply

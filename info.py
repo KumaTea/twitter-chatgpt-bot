@@ -1,4 +1,4 @@
-version = '1.2.0.0' + 'b'
+version = '1.2.1.1' + 'b'
 bot_username = 'KumaTeaBot'
 last_id_file = 'last_id.txt'
 last_mentioned_id = 1632059704548687872  # bootstrap

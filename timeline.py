@@ -9,6 +9,7 @@ from session import twi_db, logger, twi_cli
 
 
 def sync_mentions():
+    replied = False
     tweets = get_mentions(twi_db.last_id)
     if not tweets:
         return logger.debug('No new mentions.')
@@ -23,6 +24,7 @@ def sync_mentions():
             # 是网络生活最基本的礼仪！
 
             process_mentions(tweet.id)
+            replied = True
         # else:
         #     twi.update_status(
         #         status=not_auth,
@@ -32,7 +34,8 @@ def sync_mentions():
 
     # update last mentioned id
     twi_db.write_last_id(tweets[-1].id)
-    return logger.info('Synced mentions. Last mentioned id: {}'.format(twi_db.last_id))
+    logger.info('Synced mentions. Last mentioned id: {}'.format(twi_db.last_id))
+    return replied
 
 
 def check_permission(user_id):

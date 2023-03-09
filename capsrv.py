@@ -26,8 +26,7 @@ model = VisionEncoderDecoderModel.from_pretrained(model_name, low_cpu_mem_usage=
 # https://huggingface.co/docs/transformers/main_classes/model#large-model-loading
 
 
-def get_caption(im, max_length=64, num_beams=4):
-    logger.info('Caption: loading image...')
+def input_to_pil(im):
     if isinstance(im, bytes):
         logger.info('  Convert bytes to BytesIO')
         im = io.BytesIO(im)
@@ -42,6 +41,13 @@ def get_caption(im, max_length=64, num_beams=4):
         image = feature_extractor(im, return_tensors="pt").pixel_values.to(device)
     else:
         raise ValueError(f'Invalid input type: {type(im)}. Expected file path or PIL.Image object.')
+
+    return image
+
+
+def get_caption(im, max_length=64, num_beams=4):
+    logger.info('Caption: loading image...')
+    image = input_to_pil(im)
 
     # Generate the caption using the pre-trained model
     # caption_ids = model.generate(image, max_length=max_length, num_beams=num_beams)[0]
