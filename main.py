@@ -5,9 +5,14 @@ from timeline import sync_mentions
 
 if __name__ == '__main__':
     startup()
+    wait = 60
     while 1:
-        if sync_mentions():
-            time.sleep(60)
-        else:
-            time.sleep(300)
+        if wait <= 0:
+            wait = 60
 
+        if sync_mentions():
+            wait -= 30
+            time.sleep(wait)
+        else:
+            wait += 30
+            time.sleep(wait)

@@ -1,20 +1,7 @@
-# caption server
-
 import io
-import logging
 from PIL import Image
-# from session import logger
-from flask import Flask, request, jsonify
+from session import logger
 from transformers import AutoTokenizer, ViTImageProcessor, VisionEncoderDecoderModel
-
-
-logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s',
-    level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S')
-logger = logging.getLogger(__name__)
-
-app = Flask(__name__)
 
 device = 'cpu'
 model_name = 'nlpconnect/vit-gpt2-image-captioning'
@@ -56,20 +43,3 @@ def get_caption(im, max_length=64, num_beams=4):
     caption_text = tokenizer.decode(caption_ids)
     caption_text = caption_text.replace('<|endoftext|>', '').split('\n')[0].strip()
     return caption_text
-
-
-@app.route('/caption', methods=['POST'])
-def respond():
-    if request.method == 'POST':
-        logger.info('Caption: received request...')
-        if request.files:
-            image = request.files['image'].read()
-            caption = get_caption(image)
-            logger.info('Caption: responding...')
-            return jsonify({'caption': caption})
-        else:
-            return jsonify({'error': 'No image received.'})
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=14500, debug=False)

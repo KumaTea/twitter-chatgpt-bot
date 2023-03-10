@@ -53,7 +53,13 @@ def should_reply(tweet):
     # if is new mention
     replied_to = get_tweet(tweet.in_reply_to_status_id)
     if bot_username in [i['screen_name'] for i in replied_to.entities['user_mentions']]:
-        return False
+        # already mentioned
+
+        if tweet.text.lower().count(f'@{bot_username}'.lower()) > 1:
+            # forced mention
+            return True
+        else:
+            return False
 
     return True
 
@@ -73,14 +79,15 @@ def process_mentions(tweet_id):
         )
     except Exception as e:
         logger.error(str(e))
-        try:
-            return twi.update_status(
-                status=error_msg,
-                in_reply_to_status_id=tweet_id,
-                auto_populate_reply_metadata=True
-            )
-        except Exception as f:
-            logger.error(str(f))
+        # try:
+        #     return twi.update_status(
+        #         status=error_msg,
+        #         in_reply_to_status_id=tweet_id,
+        #         auto_populate_reply_metadata=True
+        #     )
+        # except Exception as f:
+        #     logger.error(str(f))
+        return False
 
 
 def thread_to_summary(thread: list):
@@ -160,6 +167,6 @@ def image_caption(tweet):
             logger.info('Caption for image {}: {}'.format(url, image_caption_text))
             caption_text += f'[photo: {image_caption_text}] '
         except Exception as e:
-            logger.error_msg('Error getting caption for image {}: {}'.format(url, e))
+            logger.error('Error getting caption for image {}: {}'.format(url, e))
 
     return caption_text.strip()

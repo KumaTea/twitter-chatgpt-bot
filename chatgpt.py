@@ -38,11 +38,14 @@ def bot_to_gpt(message):
             msg = msg.replace(slang, slangs[slang])
 
     # nickname to username
-    for user in aliases:
-        for nickname in aliases[user]:
+    for username in aliases:
+        for nickname in aliases[username]:
             if nickname in msg:
                 # msg = msg.replace(alias, f' @{user} ')
-                msg = re.sub(rf'([^@])({nickname})', rf'\1 @{user} ', msg, flags=re.IGNORECASE)
+                # msg = re.sub(rf'(?![\w@])({nickname})', rf' @{username} ', msg, flags=re.IGNORECASE)
+                msg = re.sub(rf'(?<!{re_ascii})({nickname})(?!{re_ascii})', rf' @{username} ', msg, flags=re.IGNORECASE)
+                # negative lookbehind
+                # https://docs.python.org/3/library/re.html#:~:text=Matches%20Unicode%20word
                 # replace once is enough
                 break
 
@@ -50,38 +53,39 @@ def bot_to_gpt(message):
     return msg.strip()
 
 
-def gpt_to_bot(dialogue, message):
+def gpt_to_bot(dialogue, reply):
     # modify answer from ChatGPT and pass to bot
 
     # if not message.lower().startswith('ChatGPT: '.lower()):
     #     raise Exception('Not a reply from ChatGPT')
 
-    if message.startswith('ChatGPT: '):
-        message = message[len('ChatGPT: '):]
+    users = [i.split(':')[0] for i in dialogue]
+
+    if reply.startswith('ChatGPT: '):
+        reply = reply[len('ChatGPT: '):]
+
+    # remove unnecessary mention to target user
+    target_username = users[-1]
+    if reply.lower().startswith(f'@{target_username} '.lower()):
+        reply = reply[len(f'@{target_username} '):]
 
     # replace username of bot
     pattern = re.compile(chatgpt_name, re.IGNORECASE)
-    reply = pattern.sub(bot_username, message)
+    reply = pattern.sub(bot_username, reply)
 
     # recover mentions
-    users = [i.split(':')[0] for i in dialogue]
-    for user in users:
-        if user in reply and f'@{user}' not in reply:
-            reply = reply.replace(user, f'@{user}')
+    for username in users:
+        if username in reply and f'@{username}' not in reply:
+            reply = reply.replace(username, f'@{username}')
 
     # no need to recover slangs
 
     # recover nicknames to avoid unnecessary mentions
-    for user in aliases:
-        if f'@{user}' in reply:
-            nickname = aliases[user][0]
-            reply = reply.replace(f'@{user}', nickname)
+    for username in aliases:
+        if f'@{username}' in reply:
+            nickname = aliases[username][0]
+            reply = reply.replace(f'@{username}', nickname)
             # strip spaces
             reply = re.sub(rf'\s?{nickname}\s?', nickname, reply)
-
-    # remove unnecessary mention to target user
-    target_username = users[-1]
-    if reply.startswith(f'@{target_username}'):
-        reply = reply[len(f'@{target_username}'):]
 
     return reply
