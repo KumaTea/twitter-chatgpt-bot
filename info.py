@@ -1,8 +1,9 @@
-version = '1.3.0.0' + 'b'
+version = '1.3.1.0' + 'b'
 bot_username = 'KumaTeaBot'
 last_id_file = 'last_id.txt'
 last_mentioned_id = 1632059704548687872  # bootstrap
 max_thread_length = 10
+default_wait = 300
 
 kuma = 'KumaTea0'
 

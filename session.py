@@ -47,6 +47,7 @@ class TwitterDB:
         self.last_id = last_mentioned_id
         self.auth_users = []
         self.cached_tweets = {}
+        self.cache_hits = 0
 
     def write_last_id(self, last_id):
         if last_id > self.last_id:
@@ -54,8 +55,9 @@ class TwitterDB:
             with open(last_id_file, 'w') as f:
                 f.write(str(last_id))
 
-        logger.info('Cached tweets: {}'.format(len(self.cached_tweets)))
+        logger.info('Cached tweets: {}, cache hits: {}'.format(len(self.cached_tweets), self.cache_hits))
         self.cached_tweets = {}
+        self.cache_hits = 0
 
 
 twi_db = TwitterDB()

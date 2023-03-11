@@ -82,6 +82,7 @@ def get_mentions(l_id=last_mentioned_id):
 
 def get_tweet(tweet_id):
     if tweet_id in twi_db.cached_tweets:
+        twi_db.cache_hits += 1
         return twi_db.cached_tweets[tweet_id]
     else:
         tweet = twi.get_status(tweet_id, tweet_mode='extended')
