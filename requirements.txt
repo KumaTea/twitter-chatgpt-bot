@@ -4,8 +4,8 @@ tweepy
 requests
 
 # caption server
-flask
-torch
-pillow
-accelerate
-transformers
+# flask
+# torch
+# pillow
+# accelerate
+# transformers

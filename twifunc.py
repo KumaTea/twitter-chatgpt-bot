@@ -91,6 +91,19 @@ def get_tweet(tweet_id):
         return tweet
 
 
+def tweet_len(text):
+    ascii_range = range(0, 127)
+    index = 0
+    count = 0
+    for i in text:
+        index += 1
+        if ord(i) in ascii_range:
+            count += 1
+        else:
+            count += 2
+    return count
+
+
 def tweet_cut(text):
     """
     Twitter only allows 280 characters in a tweet.
@@ -117,3 +130,69 @@ def tweet_cut(text):
             return text[:index-3] + '…'
 
     return text
+
+
+def tweet_split(text):
+    """
+    Split tweet into multiple tweets if exceeds 280 characters.
+    Add "(1/n)" to the end of each tweet.
+    Add "……" if the tweet is not the end.
+    """
+    max_tweet_length = 280
+    ascii_range = range(0, 127)
+
+    if len(text) <= max_tweet_length/2:
+        return [text]
+
+    tweets = []
+    index = 0
+    count = 0
+    for i in text:
+        index += 1
+        if ord(i) in ascii_range:
+            count += 1
+        else:
+            count += 2
+
+        if count + 2 + len(f'…… (i/nn)') >= max_tweet_length:
+            tweets.append(text[:index] + f'…… ({len(tweets)+1}/TOTAL_COUNT_PLACEHOLDER)')
+            text = text[index:]
+            index = 0
+            count = 0
+
+    tweets.append(text + f' ({len(tweets)+1}/TOTAL_COUNT_PLACEHOLDER)')
+
+    for i in range(len(tweets)):
+        tweets[i] = tweets[i].replace('TOTAL_COUNT_PLACEHOLDER', str(len(tweets)))
+
+    return tweets
+
+
+def send_tweet(text_list: list, reply_to=None):
+    if len(text_list) == 1:
+        if reply_to:
+            return twi.update_status(
+                status=text_list[0],
+                in_reply_to_status_id=reply_to,
+                auto_populate_reply_metadata=True
+            )
+        else:
+            return twi.update_status(status=text_list[0])
+    else:
+        if reply_to:
+            last_tweet = twi.update_status(
+                status=text_list[0],
+                in_reply_to_status_id=reply_to,
+                auto_populate_reply_metadata=True
+            )
+        else:
+            last_tweet = twi.update_status(status=text_list[0])
+
+        for i in range(1, len(text_list)):
+            next_tweet = twi.update_status(
+                status=text_list[i],
+                in_reply_to_status_id=last_tweet.id,
+                auto_populate_reply_metadata=True
+            )
+            last_tweet = next_tweet
+        return last_tweet

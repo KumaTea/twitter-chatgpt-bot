@@ -70,13 +70,9 @@ def process_mentions(tweet_id):
         thread = get_thread_tweets(tweet_id)
         thread_summaries = thread_to_summary(thread)
         gpt_reply = chat(thread_summaries)
-        reply = tweet_cut(gpt_reply)
+        reply_list = tweet_split(gpt_reply)
 
-        return twi.update_status(
-            status=reply,
-            in_reply_to_status_id=tweet_id,
-            auto_populate_reply_metadata=True
-        )
+        return send_tweet(reply_list, tweet_id)
     except Exception as e:
         logger.error(str(e))
         # try:
