@@ -7,11 +7,11 @@ default_wait = 300
 
 kuma = 'KumaTea0'
 
-instruction = "You're Twitter user ChatGPT. Here's " \
+instruction = "You're Twitter user ChatGPTBot. Here's " \
               'a thread in format "Name: Tweet". ' \
               'Reply as their friend in their language, ' \
               'be concise kind & relaxed. '
-chatgpt_name = 'ChatGPT'
+chatgpt_name = 'ChatGPTBot'
 
 not_auth = '对不起，bot 内测调试中，暂不对外开放！'
 error_msg = '把我 CPU 干烧了\n\n' \

@@ -141,7 +141,7 @@ def tweet_split(text):
     max_tweet_length = 280
     ascii_range = range(0, 127)
 
-    if len(text) <= max_tweet_length/2:
+    if tweet_len(text) <= max_tweet_length:
         return [text]
 
     tweets = []

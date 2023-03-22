@@ -18,7 +18,7 @@ def chat(dialogue: list):
 
 
 def gen_thread(dialogue: list):
-    thread = [{"role": "user", "content": instruction}]
+    thread = [{"role": "system", "content": instruction}]
     for message in dialogue:
         if message.lower().startswith(bot_username.lower()):
             thread.append({"role": "assistant", "content": bot_to_gpt(message)})
@@ -61,8 +61,8 @@ def gpt_to_bot(dialogue, reply):
 
     users = [i.split(':')[0] for i in dialogue]
 
-    if reply.startswith('ChatGPT: '):
-        reply = reply[len('ChatGPT: '):]
+    if reply.startswith(f'{chatgpt_name}: '):
+        reply = reply[len(f'{chatgpt_name}: '):]
 
     # remove unnecessary mention to target user
     target_username = users[-1]
