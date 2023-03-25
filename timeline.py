@@ -3,7 +3,6 @@ import requests
 from info import *
 from twifunc import *
 from chatgpt import chat
-# from caption import get_caption
 from capcli import get_caption
 from session import twi_db, logger, twi_cli
 
@@ -70,7 +69,7 @@ def process_mentions(tweet_id):
         thread = get_thread_tweets(tweet_id)
         thread_summaries = thread_to_summary(thread)
         gpt_reply = chat(thread_summaries)
-        reply_list = tweet_split(gpt_reply)
+        reply_list = tweet_split_no_break(gpt_reply)
 
         return send_tweet(reply_list, tweet_id)
     except Exception as e:
