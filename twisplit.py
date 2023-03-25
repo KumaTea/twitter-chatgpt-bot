@@ -1,4 +1,6 @@
+import re
 from session import logger
+from info import bot_username
 
 
 def tweet_len(text):
@@ -116,3 +118,40 @@ def tweet_split_no_break(text):
         tweets[i] = tweets[i].replace('TOTAL_COUNT_PLACEHOLDER', str(len(tweets)))
 
     return tweets
+
+
+def merge_split(tweet_list: list):
+    merged_list = []
+    to_merge = ''
+    for tweet in tweet_list:
+        # 'username: text'
+        if tweet.startswith(f'{bot_username}: '):
+            # if tweet.endswith(')'):  # …… (i/nn)
+            if re.findall(r'\(\d+\/\d+\)', tweet):  # …… (i/nn)
+                if '…… (' in tweet:
+                    # uncomplete split
+                    to_merge += tweet[len(f'{bot_username}: '):tweet.rfind('…… (')]
+                    if ord(to_merge[-1]) < 128:
+                        # last char is ascii
+                        to_merge += ' '
+                else:
+                    # last split
+                    to_merge += tweet[len(f'{bot_username}: '):tweet.rfind(' (')]
+                    merged_list.append(f'{bot_username}: ' + to_merge)
+                    to_merge = ''
+            else:
+                # bot, but not split
+                if to_merge:
+                    merged_list.append(f'{bot_username}: ' + to_merge)
+                    to_merge = ''
+                merged_list.append(tweet)
+        else:
+            # not bot
+            if to_merge:
+                merged_list.append(f'{bot_username}: ' + to_merge)
+                to_merge = ''
+            merged_list.append(tweet)
+    if to_merge:
+        merged_list.append(f'{bot_username}: ' + to_merge)
+
+    return merged_list

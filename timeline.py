@@ -1,6 +1,5 @@
 import io
 import requests
-from info import *
 from twifunc import *
 from chatgpt import chat
 from capcli import get_caption
@@ -68,7 +67,8 @@ def process_mentions(tweet_id):
         # get the whole thread
         thread = get_thread_tweets(tweet_id)
         thread_summaries = thread_to_summary(thread)
-        gpt_reply = chat(thread_summaries)
+        merged_thread = merge_split(thread_summaries)
+        gpt_reply = chat(merged_thread)
         reply_list = tweet_split_no_break(gpt_reply)
 
         return send_tweet(reply_list, tweet_id)
